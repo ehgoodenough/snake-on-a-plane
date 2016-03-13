@@ -38,3 +38,14 @@ var state = {
         height: 12,
     }
 }
+
+var MountElement = document.getElementById("mount")
+class MountComponent extends React.Component {
+    render() {
+        return (
+            <div>Hello World!</div>
+        )
+    }
+}
+
+var rendering = ReactDOM.render(<MountComponent/>, MountElement)

@@ -8,7 +8,7 @@ var Afloop = require("afloop")
 var Keyb = require("keyb")
 
 /////////////////////////
-///// Initializing /////
+///// Initializ4ing /////
 ///////////////////////
 
 var FRAME_WIDTH = 13
@@ -22,6 +22,9 @@ class Game {
                 y: Math.floor(FRAME_HEIGHT / 2),
             }
         })
+    }
+    update(delta) {
+        this.snake.update(delta)
     }
 }
 
@@ -49,6 +52,10 @@ class Snake {
         if(this.delta >= this.speed) {
             this.delta -= this.speed
 
+            if(!this.hasDirection()) {
+                return
+            }
+
             this.position.x += this.direction.x
             this.position.y += this.direction.y
 
@@ -73,6 +80,10 @@ class Snake {
                 this.pods.pop()
             }
         }
+    }
+    hasDirection() {
+        return !!this.direction.x
+            || !!this.direction.y
     }
 }
 
@@ -156,6 +167,20 @@ class SnakePodComponent extends React.Component {
     }
 }
 
+class UserInterface extends React.Component {
+    render() {
+        return (
+            <div className="user-interface" style={this.style}>
+                {this.props.game.snake.hasDirection() == false ? (
+                    <div className="user-prompt">
+                        <span>Press Any Key</span>
+                    </div>
+                ) : null}
+            </div>
+        )
+    }
+}
+
 var MountElement = document.getElementById("mount")
 class MountComponent extends React.Component {
     render() {
@@ -163,6 +188,7 @@ class MountComponent extends React.Component {
             return (
                 <AspectRatioFrameComponent frame={this.state.frame}>
                     <SnakeComponent snake={this.state.game.snake}/>
+                    <UserInterface game={this.state.game}/>
                 </AspectRatioFrameComponent>
             )
         } else {
@@ -180,6 +206,6 @@ var render = ReactDOM.render(<MountComponent/>, MountElement)
 //////////////////
 
 var loop = new Afloop((delta) => {
-    state.game.snake.update(delta)
+    state.game.update(delta)
     render.setState(state)
 })

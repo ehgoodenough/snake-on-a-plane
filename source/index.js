@@ -11,49 +11,27 @@ var Keyb = require("keyb")
 ///// Initializing /////
 ///////////////////////
 
+var FRAME_WIDTH = 13
+var FRAME_HEIGHT = 13
+
 class Game {
     constructor() {
         this.snake = new Snake({
             position: {
-                x: Math.floor(state.frame.width / 2),
-                y: Math.floor(state.frame.height / 2),
+                x: Math.floor(FRAME_WIDTH / 2),
+                y: Math.floor(FRAME_HEIGHT / 2),
             }
         })
     }
 }
 
 class Snake {
-    constructor() {
-        this.size = 3,
-        this.position = {
-            x: 2, y: 2,
-        }
-        this.direction = {
-            x: +1, y: 0,
-        }
-        this.pods = [
-            {
-                position: {
-                    x: 2,
-                    y: 2,
-                }
-            },
-            {
-                position: {
-                    x: 1,
-                    y: 2,
-                }
-            },
-            {
-                position: {
-                    x: 1,
-                    y: 3,
-                }
-            },
-        ]
-
-        this.speed = 0.25
-        this.delta = 0
+    constructor(snake) {
+        this.position = snake.position || {x: 0, y: 0}
+        this.direction = snake.direction || {x: 0, y: 0}
+        this.speed = snake.speed || 0.25
+        this.size = snake.size || 3
+        this.pods = []
     }
     update(delta) {
         if(Keyb.isDown("W") || Keyb.isDown("<up>")) {
@@ -66,6 +44,7 @@ class Snake {
             this.direction = {x: +1, y: 0}
         }
 
+        this.delta = this.delta || 0
         this.delta += delta
         if(this.delta >= this.speed) {
             this.delta -= this.speed
@@ -98,12 +77,10 @@ class Snake {
 }
 
 var state = {
-    game: {
-        snake: new Snake(),
-    },
+    game: new Game(),
     frame: {
-        width: 13,
-        height: 13,
+        width: FRAME_WIDTH,
+        height: FRAME_HEIGHT,
     }
 }
 

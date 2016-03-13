@@ -1,7 +1,15 @@
+////////////////////
+///// Importing /////
+//////////////////
+
 var React = require("react")
 var ReactDOM = require("react-dom")
 var Afloop = require("afloop")
 var Keyb = require("keyb")
+
+/////////////////////////
+///// Initializing /////
+///////////////////////
 
 var state = {
     game: {
@@ -45,6 +53,10 @@ var state = {
 if(STAGE == "DEVELOPMENT") {
     window.state = state
 }
+
+//////////////////////
+///// Rendering /////
+////////////////////
 
 class AspectRatioFrameComponent extends React.Component {
     render() {
@@ -123,5 +135,12 @@ class MountComponent extends React.Component {
     }
 }
 
-var rendering = ReactDOM.render(<MountComponent/>, MountElement)
-rendering.setState(state)
+var render = ReactDOM.render(<MountComponent/>, MountElement)
+
+////////////////////
+///// Looping /////
+//////////////////
+
+var loop = new Afloop((delta) => {
+    render.setState(state)
+})

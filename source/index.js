@@ -69,8 +69,10 @@ class Snake {
         this.delta += delta
         if(this.delta >= this.speed) {
             this.delta -= this.speed
+
             this.position.x += this.direction.x
             this.position.y += this.direction.y
+
             if(this.position.y >= state.frame.height) {
                 this.position.y = 0
             } else if(this.position.y < 0) {
@@ -80,21 +82,17 @@ class Snake {
             } else if(this.position.x < 0) {
                 this.position.x = state.frame.width - 1
             }
-            this.pods.unshift(new SnakePod({
-                position: this.position
-            }))
+
+            this.pods.unshift({
+                position: {
+                    x: this.position.x,
+                    y: this.position.y,
+                }
+            })
+
             if(this.pods.length > this.size) {
                 this.pods.pop()
             }
-        }
-    }
-}
-
-class SnakePod {
-    constructor(snakepod) {
-        this.position = {
-            x: snakepod.position.x,
-            y: snakepod.position.y,
         }
     }
 }
@@ -151,8 +149,8 @@ class SnakeComponent extends React.Component {
             <div className="snake" style={this.style}>
                 {this.props.snake.pods.map((pod, key) => {
                     return (
-                        <SnakePodComponent key={key}
-                            snake={this.props.snake} pod={pod}/>
+                        <SnakePodComponent key={key} pod={pod}
+                            percent={key / this.props.snake.pods.length}/>
                     )
                 })}
             </div>
@@ -173,7 +171,7 @@ class SnakePodComponent extends React.Component {
             position: "absolute",
             top: this.props.pod.position.y + "em",
             left: this.props.pod.position.x + "em",
-            backgroundColor: this.props.pod.color || "hotpink",
+            backgroundColor: "rgb(" + Math.floor((255 - 100) * (1 - this.props.percent) + 100) + ", 0, 0)",
             // transitionDuration: this.props.snake.speed + "s",
             // transitionTimingFunction: "linear",
             // transitionProperty: "top, left",

@@ -5,6 +5,7 @@
 var React = require("react")
 var ReactDOM = require("react-dom")
 var Afloop = require("afloop")
+var ShortID = require("shortid")
 var Keyb = require("keyb")
 
 /////////////////////////
@@ -13,6 +14,7 @@ var Keyb = require("keyb")
 
 var FRAME_WIDTH = 13
 var FRAME_HEIGHT = 13
+var SPAWN_TIME = 1
 
 class Game {
     constructor() {
@@ -22,9 +24,28 @@ class Game {
                 y: Math.floor(FRAME_HEIGHT / 2),
             }
         })
+
+        this.pellets = {}
     }
     update(delta) {
-        this.snake.update(delta)
+        if(this.snake.hasDirection()) {
+            this.delta = this.delta || 0
+            this.delta += delta
+            if(this.delta > SPAWN_TIME) {
+                this.delta -= SPAWN_TIME
+                var key = ShortID.generate()
+                this.pellets[key] = new Pellet()
+            }
+        }
+    }
+}
+
+class Pellet {
+    constructor() {
+        this.position = {
+            x: Math.floor(Math.random() * FRAME_WIDTH),
+            y: Math.floor(Math.random() * FRAME_HEIGHT),
+        }
     }
 }
 
@@ -167,17 +188,45 @@ class SnakePodComponent extends React.Component {
     }
 }
 
+class PelletComponent extends React.Component {
+    render() {
+        return (
+            <div className="pellet" style={this.style}/>
+        )
+    }
+    get style() {
+        return {
+            width: 1 + "em",
+            height: 1 + "em",
+            position: "absolute",
+            top: this.props.pellet.position.y + "em",
+            left: this.props.pellet.position.x + "em",
+            backgroundColor: "#0C0",
+        }
+    }
+}
+
 class UserInterface extends React.Component {
     render() {
         return (
             <div className="user-interface" style={this.style}>
-                {this.props.game.snake.hasDirection() == false ? (
+                {!this.props.game.snake.hasDirection() ? (
                     <div className="user-prompt">
-                        <span>Press Any Key</span>
+                        <span>Press any Key :D</span>
                     </div>
                 ) : null}
             </div>
         )
+    }
+    get style() {
+        return {
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 99999,
+            position: "absolute",
+        }
     }
 }
 
@@ -188,6 +237,12 @@ class MountComponent extends React.Component {
             return (
                 <AspectRatioFrameComponent frame={this.state.frame}>
                     <SnakeComponent snake={this.state.game.snake}/>
+                    {Object.keys(this.state.game.pellets).map((key) => {
+                        var pellet = this.state.game.pellets[key]
+                        return (
+                            <PelletComponent pellet={pellet} key={key}/>
+                        )
+                    })}
                     <UserInterface game={this.state.game}/>
                 </AspectRatioFrameComponent>
             )
@@ -206,6 +261,7 @@ var render = ReactDOM.render(<MountComponent/>, MountElement)
 //////////////////
 
 var loop = new Afloop((delta) => {
+    state.game.snake.update(delta)
     state.game.update(delta)
     render.setState(state)
 })

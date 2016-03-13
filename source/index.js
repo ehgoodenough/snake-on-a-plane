@@ -11,38 +11,71 @@ var Keyb = require("keyb")
 ///// Initializing /////
 ///////////////////////
 
+class Snake {
+    constructor() {
+        this.size = 3,
+        this.position = {
+            x: 2, y: 2,
+        }
+        this.direction = {
+            x: +1, y: 0,
+        }
+        this.pods = [
+            {
+                position: {
+                    x: 2,
+                    y: 2,
+                }
+            },
+            {
+                position: {
+                    x: 1,
+                    y: 2,
+                }
+            },
+            {
+                position: {
+                    x: 1,
+                    y: 3,
+                }
+            },
+        ]
+
+        this.speed = 0.25
+        this.delta = 0
+    }
+    update(delta) {
+        if(Keyb.isDown("W") || Keyb.isDown("<up>")) {
+            this.direction = {x: 0, y: -1}
+        } if(Keyb.isDown("D") || Keyb.isDown("<down>")) {
+            this.direction = {x: 0, y: +1}
+        } if(Keyb.isDown("A") || Keyb.isDown("<left>")) {
+            this.direction = {x: -1, y: 0}
+        } if(Keyb.isDown("D") || Keyb.isDown("<right>")) {
+            this.direction = {x: +1, y: 0}
+        }
+
+        this.delta += delta
+        if(this.delta >= this.speed) {
+            this.delta -= this.speed
+            this.position.x += this.direction.x
+            this.position.y += this.direction.y
+            this.pods.unshift({
+                position: {
+                    x: this.position.x,
+                    y: this.position.y,
+                }
+            })
+            if(this.pods.length > this.size) {
+                this.pods.pop()
+            }
+        }
+    }
+}
+
 var state = {
     game: {
-        snake: {
-            age: 3,
-            direction: "EAST",
-            pods: [
-                {
-                    age: 0,
-                    color: "#00A",
-                    position: {
-                        x: 2,
-                        y: 2,
-                    }
-                },
-                {
-                    age: 1,
-                    color: "#0A0",
-                    position: {
-                        x: 1,
-                        y: 2,
-                    }
-                },
-                {
-                    age: 2,
-                    color: "#A00",
-                    position: {
-                        x: 1,
-                        y: 3,
-                    }
-                },
-            ]
-        }
+        snake: new Snake(),
     },
     frame: {
         width: 12,
@@ -92,7 +125,8 @@ class SnakeComponent extends React.Component {
             <div className="snake" style={this.style}>
                 {this.props.snake.pods.map((pod, key) => {
                     return (
-                        <SnakePodComponent pod={pod} key={key}/>
+                        <SnakePodComponent key={key}
+                            snake={this.props.snake} pod={pod}/>
                     )
                 })}
             </div>
@@ -142,5 +176,6 @@ var render = ReactDOM.render(<MountComponent/>, MountElement)
 //////////////////
 
 var loop = new Afloop((delta) => {
+    state.game.snake.update(delta)
     render.setState(state)
 })

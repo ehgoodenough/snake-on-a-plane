@@ -11,6 +11,7 @@ var state = {
             pods: [
                 {
                     age: 0,
+                    color: "#00A",
                     position: {
                         x: 2,
                         y: 2,
@@ -18,6 +19,7 @@ var state = {
                 },
                 {
                     age: 1,
+                    color: "#0A0",
                     position: {
                         x: 1,
                         y: 2,
@@ -25,6 +27,7 @@ var state = {
                 },
                 {
                     age: 2,
+                    color: "#A00",
                     position: {
                         x: 1,
                         y: 3,
@@ -71,13 +74,45 @@ class AspectRatioFrameComponent extends React.Component {
     }
 }
 
+class SnakeComponent extends React.Component {
+    render() {
+        return (
+            <div className="snake" style={this.style}>
+                {this.props.snake.pods.map((pod, key) => {
+                    return (
+                        <SnakePodComponent pod={pod} key={key}/>
+                    )
+                })}
+            </div>
+        )
+    }
+}
+
+class SnakePodComponent extends React.Component {
+    render() {
+        return (
+            <div className="snake-pod" style={this.style}/>
+        )
+    }
+    get style() {
+        return {
+            width: 1 + "em",
+            height: 1 + "em",
+            position: "absolute",
+            top: this.props.pod.position.y + "em",
+            left: this.props.pod.position.x + "em",
+            backgroundColor: this.props.pod.color || "hotpink",
+        }
+    }
+}
+
 var MountElement = document.getElementById("mount")
 class MountComponent extends React.Component {
     render() {
         if(!!this.state) {
             return (
                 <AspectRatioFrameComponent frame={this.state.frame}>
-                    <div>Hello World!!</div>
+                    <SnakeComponent snake={this.state.game.snake}/>
                 </AspectRatioFrameComponent>
             )
         } else {

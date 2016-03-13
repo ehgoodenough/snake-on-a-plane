@@ -11,6 +11,17 @@ var Keyb = require("keyb")
 ///// Initializing /////
 ///////////////////////
 
+class Game {
+    constructor() {
+        this.snake = new Snake({
+            position: {
+                x: Math.floor(state.frame.width / 2),
+                y: Math.floor(state.frame.height / 2),
+            }
+        })
+    }
+}
+
 class Snake {
     constructor() {
         this.size = 3,
@@ -60,15 +71,30 @@ class Snake {
             this.delta -= this.speed
             this.position.x += this.direction.x
             this.position.y += this.direction.y
-            this.pods.unshift({
-                position: {
-                    x: this.position.x,
-                    y: this.position.y,
-                }
-            })
+            if(this.position.y >= state.frame.height) {
+                this.position.y = 0
+            } else if(this.position.y < 0) {
+                this.position.y = state.frame.height - 1
+            } if(this.position.x >= state.frame.height) {
+                this.position.x = 0
+            } else if(this.position.x < 0) {
+                this.position.x = state.frame.width - 1
+            }
+            this.pods.unshift(new SnakePod({
+                position: this.position
+            }))
             if(this.pods.length > this.size) {
                 this.pods.pop()
             }
+        }
+    }
+}
+
+class SnakePod {
+    constructor(snakepod) {
+        this.position = {
+            x: snakepod.position.x,
+            y: snakepod.position.y,
         }
     }
 }
@@ -78,8 +104,8 @@ var state = {
         snake: new Snake(),
     },
     frame: {
-        width: 12,
-        height: 12,
+        width: 13,
+        height: 13,
     }
 }
 
@@ -148,6 +174,9 @@ class SnakePodComponent extends React.Component {
             top: this.props.pod.position.y + "em",
             left: this.props.pod.position.x + "em",
             backgroundColor: this.props.pod.color || "hotpink",
+            // transitionDuration: this.props.snake.speed + "s",
+            // transitionTimingFunction: "linear",
+            // transitionProperty: "top, left",
         }
     }
 }

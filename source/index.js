@@ -21,6 +21,10 @@ var MINIMUM_SPEED = 0.1
 
 class Game {
     constructor() {
+        this.initiate()
+    }
+    initiate() {
+        this.delta = 0
         this.pellets = new Object()
         this.snake = new Snake({
             game: this,
@@ -63,17 +67,17 @@ class Snake {
         this.game = snake.game
         this.position = new Position(snake.position) || {x: 0, y: 0}
         this.direction = snake.direction || {x: 0, y: 0}
-        this.size = snake.size || 3
+        this.size = snake.size || 11
         this.pods = []
     }
     update(delta) {
-        if(Keyb.isDown("W") || Keyb.isDown("<up>")) {
+        if(Keyb.isJustDown("W") || Keyb.isJustDown("<up>")) {
             this.direction = {x: 0, y: -1}
-        } if(Keyb.isDown("D") || Keyb.isDown("<down>")) {
+        } if(Keyb.isJustDown("D") || Keyb.isJustDown("<down>")) {
             this.direction = {x: 0, y: +1}
-        } if(Keyb.isDown("A") || Keyb.isDown("<left>")) {
+        } if(Keyb.isJustDown("A") || Keyb.isJustDown("<left>")) {
             this.direction = {x: -1, y: 0}
-        } if(Keyb.isDown("D") || Keyb.isDown("<right>")) {
+        } if(Keyb.isJustDown("D") || Keyb.isJustDown("<right>")) {
             this.direction = {x: +1, y: 0}
         }
 
@@ -101,6 +105,14 @@ class Snake {
 
             if(!!this.game.pellets[this.position]) {
                 this.size += 1
+            }
+
+            var collidesWithSelf = this.pods.some((pod) => {
+                return this.position.x == pod.position.x
+                    && this.position.y == pod.position.y
+            })
+            if(!!collidesWithSelf) {
+                this.game.initiate()
             }
 
             this.pods.unshift({

@@ -20,6 +20,7 @@ class Game {
     constructor() {
         this.pellets = new Object()
         this.snake = new Snake({
+            game: this,
             position: {
                 x: Math.floor(FRAME_WIDTH / 2),
                 y: Math.floor(FRAME_HEIGHT / 2),
@@ -56,10 +57,11 @@ class Position {
 
 class Snake {
     constructor(snake) {
-        this.position = snake.position || {x: 0, y: 0}
+        this.game = snake.game
+        this.position = new Position(snake.position) || {x: 0, y: 0}
         this.direction = snake.direction || {x: 0, y: 0}
         this.speed = snake.speed || 0.25
-        this.size = snake.size || 3
+        this.size = snake.size || 9
         this.pods = []
     }
     update(delta) {
@@ -93,6 +95,10 @@ class Snake {
                 this.position.x = 0
             } else if(this.position.x < 0) {
                 this.position.x = state.frame.width - 1
+            }
+
+            if(!!this.game.pellets[this.position]) {
+                this.size += 1
             }
 
             this.pods.unshift({
@@ -273,4 +279,6 @@ var loop = new Afloop((delta) => {
 })
 
 // add collision with self
-// do not let pellets appear on pellets
+// add collision with pellets
+// spawn two different kinds of pellet
+// add collision with bad pallets

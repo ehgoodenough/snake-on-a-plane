@@ -18,14 +18,13 @@ var SPAWN_TIME = 1
 
 class Game {
     constructor() {
+        this.pellets = new Object()
         this.snake = new Snake({
             position: {
                 x: Math.floor(FRAME_WIDTH / 2),
                 y: Math.floor(FRAME_HEIGHT / 2),
             }
         })
-
-        this.pellets = {}
     }
     update(delta) {
         if(this.snake.hasDirection()) {
@@ -33,19 +32,25 @@ class Game {
             this.delta += delta
             if(this.delta > SPAWN_TIME) {
                 this.delta -= SPAWN_TIME
-                var key = ShortID.generate()
-                this.pellets[key] = new Pellet()
+                var position = new Position({
+                    x: Math.floor(Math.random() * FRAME_WIDTH),
+                    y: Math.floor(Math.random() * FRAME_HEIGHT),
+                })
+                this.pellets[position] = {
+                    position: position
+                }
             }
         }
     }
 }
 
-class Pellet {
-    constructor() {
-        this.position = {
-            x: Math.floor(Math.random() * FRAME_WIDTH),
-            y: Math.floor(Math.random() * FRAME_HEIGHT),
-        }
+class Position {
+    constructor(position) {
+        this.x = position.x || 0
+        this.y = position.y || 0
+    }
+    toString() {
+        return this.x + "x" + this.y
     }
 }
 
@@ -266,3 +271,6 @@ var loop = new Afloop((delta) => {
     state.game.update(delta)
     render.setState(state)
 })
+
+// add collision with self
+// do not let pellets appear on pellets

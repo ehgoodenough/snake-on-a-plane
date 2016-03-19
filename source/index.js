@@ -15,6 +15,9 @@ var Keyb = require("keyb")
 var FRAME_WIDTH = 13
 var FRAME_HEIGHT = 13
 var SPAWN_TIME = 1
+var ACCELERATION_GRADIENT = 5
+var SPEED_LEVEL_COUNT = 5
+var MINIMUM_SPEED = 0.1
 
 class Game {
     constructor() {
@@ -60,8 +63,7 @@ class Snake {
         this.game = snake.game
         this.position = new Position(snake.position) || {x: 0, y: 0}
         this.direction = snake.direction || {x: 0, y: 0}
-        this.speed = snake.speed || 0.25
-        this.size = snake.size || 9
+        this.size = snake.size || 3
         this.pods = []
     }
     update(delta) {
@@ -116,6 +118,9 @@ class Snake {
     hasDirection() {
         return !!this.direction.x
             || !!this.direction.y
+    }
+    get speed() {
+        return Math.max(MINIMUM_SPEED, (1 - ((Math.floor(this.size / ACCELERATION_GRADIENT) + 1) / SPEED_LEVEL_COUNT)) + MINIMUM_SPEED)
     }
 }
 

@@ -1,10 +1,10 @@
 {
   "name": "snake",
-  "version": "0.0.0",
-  "description": "A game from GDC 2016 Plane Jam",
+  "version": "0.0.1",
+  "description": "A game from GDC Plane Jam 2016",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ehgoodenough/snake"
+    "url": "https://github.com/ehgoodenough/snake-on-a-plane"
   },
   "contributors": [
     "Andrew McPherson <@ehgoodenough>"

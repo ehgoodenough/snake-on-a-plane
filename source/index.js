@@ -1,16 +1,16 @@
-////////////////////
-///// Importing /////
-//////////////////
+//////////////////////////////////////////
+/////////////// Importing ///////////////
+////////////////////////////////////////
 
 var React = require("react")
 var ReactDOM = require("react-dom")
-var Afloop = require("afloop")
 var ShortID = require("shortid")
+var Afloop = require("afloop")
 var Keyb = require("keyb")
 
-/////////////////////////
-///// Initializ4ing /////
-///////////////////////
+/////////////////////////////////////////////
+/////////////// Initializing ///////////////
+///////////////////////////////////////////
 
 var FRAME_WIDTH = 13
 var FRAME_HEIGHT = 13
@@ -120,9 +120,9 @@ if(STAGE == "DEVELOPMENT") {
     window.state = state
 }
 
-//////////////////////
-///// Rendering /////
-////////////////////
+//////////////////////////////////////////
+/////////////// Rendering ///////////////
+////////////////////////////////////////
 
 class AspectRatioFrameComponent extends React.Component {
     render() {
@@ -230,19 +230,18 @@ class UserInterface extends React.Component {
     }
 }
 
-var MountElement = document.getElementById("mount")
 class MountComponent extends React.Component {
     render() {
         if(!!this.state) {
             return (
                 <AspectRatioFrameComponent frame={this.state.frame}>
-                    <SnakeComponent snake={this.state.game.snake}/>
                     {Object.keys(this.state.game.pellets).map((key) => {
-                        var pellet = this.state.game.pellets[key]
                         return (
-                            <PelletComponent pellet={pellet} key={key}/>
+                            <PelletComponent key={key}
+                                pellet={this.state.game.pellets[key]}/>
                         )
                     })}
+                    <SnakeComponent snake={this.state.game.snake}/>
                     <UserInterface game={this.state.game}/>
                 </AspectRatioFrameComponent>
             )
@@ -254,11 +253,13 @@ class MountComponent extends React.Component {
     }
 }
 
+var MountElement = document.getElementById("mount")
+
 var render = ReactDOM.render(<MountComponent/>, MountElement)
 
-////////////////////
-///// Looping /////
-//////////////////
+////////////////////////////////////////
+/////////////// Looping ///////////////
+//////////////////////////////////////
 
 var loop = new Afloop((delta) => {
     state.game.snake.update(delta)

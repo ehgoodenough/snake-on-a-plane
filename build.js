@@ -14,7 +14,7 @@ var BrowserSync = require("browser-sync")
 var Inliner = require("inliner")
 
 var PORT = 4444
-var NAME = "Overworld"
+var NAME = "Snake on a Plane"
 var PATH = path.join(__dirname, "./source")
 var STAGE = yargs.argv.production ? "PRODUCTION" : "DEVELOPMENT"
 var MODE = yargs.argv._.indexOf("server") != -1 ? "SERVER" : yargs.argv._.indexOf("bundle") != -1 ? "BUNDLE" : null

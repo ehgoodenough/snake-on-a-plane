@@ -15,6 +15,7 @@ var Keyb = require("keyb")
 var FRAME_WIDTH = 13
 var FRAME_HEIGHT = 13
 var SPAWN_TIME = 1
+var GAME_OVER_TIME = 5
 var ACCELERATION_GRADIENT = 5
 var SPEED_LEVEL_COUNT = 5
 var MINIMUM_SPEED = 0.1
@@ -24,7 +25,6 @@ class Game {
         this.initiate()
     }
     initiate() {
-        this.delta = 0
         this.pellets = new Object()
         this.snake = new Snake({
             game: this,
@@ -33,32 +33,37 @@ class Game {
                 y: Math.floor(FRAME_HEIGHT / 2),
             }
         })
+        this.delta = 0
+        this.isPlaying = true
     }
     update(delta) {
-        if(this.snake.hasDirection()) {
-            this.delta = this.delta || 0
-            this.delta += delta
-            if(this.delta > SPAWN_TIME) {
-                this.delta -= SPAWN_TIME
-                var position = new Position({
-                    x: Math.floor(Math.random() * FRAME_WIDTH),
-                    y: Math.floor(Math.random() * FRAME_HEIGHT),
-                })
-                this.pellets[position] = {
-                    position: position
+        if(this.isPlaying) {
+            this.snake.update(delta)
+            if(this.snake.hasDirection()) {
+                this.delta += delta
+                if(this.delta > SPAWN_TIME) {
+                    this.delta -= SPAWN_TIME
+                    var position = new Position({
+                        x: Math.floor(Math.random() * FRAME_WIDTH),
+                        y: Math.floor(Math.random() * FRAME_HEIGHT),
+                    })
+                    this.pellets[position] = {
+                        position: position
+                    }
                 }
             }
+        } else {
+            if(Keyb.isJustDown("W") || Keyb.isJustDown("<up>")
+            || Keyb.isJustDown("S") || Keyb.isJustDown("<down>")
+            || Keyb.isJustDown("A") || Keyb.isJustDown("<left>")
+            || Keyb.isJustDown("D") || Keyb.isJustDown("<right>")) {
+                this.initiate()
+            }
+            this.delta += delta
+            if(this.delta > GAME_OVER_TIME) {
+                this.initiate()
+            }
         }
-    }
-}
-
-class Position {
-    constructor(position) {
-        this.x = position.x || 0
-        this.y = position.y || 0
-    }
-    toString() {
-        return this.x + "x" + this.y
     }
 }
 
@@ -112,7 +117,7 @@ class Snake {
                     && this.position.y == pod.position.y
             })
             if(!!collidesWithSelf) {
-                this.game.initiate()
+                this.game.isPlaying = false
             }
 
             this.pods.unshift({
@@ -133,6 +138,16 @@ class Snake {
     }
     get speed() {
         return Math.max(MINIMUM_SPEED, (1 - ((Math.floor(this.size / ACCELERATION_GRADIENT) + 1) / SPEED_LEVEL_COUNT)) + MINIMUM_SPEED)
+    }
+}
+
+class Position {
+    constructor(position) {
+        this.x = position.x || 0
+        this.y = position.y || 0
+    }
+    toString() {
+        return this.x + "x" + this.y
     }
 }
 
@@ -243,6 +258,11 @@ class UserInterface extends React.Component {
                         <span>Press any Key :D</span>
                     </div>
                 ) : null}
+                {!this.props.game.isPlaying ? (
+                    <div className="game-over">
+                        <span>Game Over!</span>
+                    </div>
+                ) : null}
             </div>
         )
     }
@@ -290,7 +310,6 @@ var render = ReactDOM.render(<MountComponent/>, MountElement)
 //////////////////////////////////////
 
 var loop = new Afloop((delta) => {
-    state.game.snake.update(delta)
     state.game.update(delta)
     render.setState(state)
 })

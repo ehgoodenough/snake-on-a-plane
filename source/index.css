@@ -28,3 +28,12 @@ html {
 .game-over.message {
     font-size: 2em;
 }
+
+header {
+    padding: 16px;
+    text-align: center;
+
+    h2 {
+        font-size: 0.75em;
+    }
+}

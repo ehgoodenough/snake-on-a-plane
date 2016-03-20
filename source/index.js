@@ -16,6 +16,7 @@ var FRAME_WIDTH = 13
 var FRAME_HEIGHT = 13
 var SPAWN_TIME = 1
 var GAME_OVER_TIME = 5
+var INITIAL_SIZE = 3
 var ACCELERATION_GRADIENT = 5
 var SPEED_LEVEL_COUNT = 5
 var MINIMUM_SPEED = 0.1
@@ -73,7 +74,7 @@ class Snake {
         this.game = snake.game
         this.position = new Position(snake.position) || {x: 0, y: 0}
         this.direction = snake.direction || {x: 0, y: 0}
-        this.size = snake.size || 11
+        this.size = snake.size || INITIAL_SIZE
         this.pods = []
     }
     update(delta) {
@@ -260,8 +261,14 @@ class UserInterface extends React.Component {
         return (
             <div className="user-interface" style={this.style}>
                 {!this.props.game.snake.hasDirection() ? (
-                    <div className="start-game message">
-                        <span>Press any Key :D</span>
+                    <div>
+                        <header>
+                            <h2>For GDC Plane Jam 2016, I made</h2>
+                            <h1>SnaKe on a Plane</h1>
+                        </header>
+                        <div className="start-game message">
+                            <span>Press any arrow Key</span>
+                        </div>
                     </div>
                 ) : null}
                 {!this.props.game.isPlaying ? (

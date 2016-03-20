@@ -16,17 +16,15 @@ html {
     font-family: tiny;
 }
 
-.user-prompt {
-    text-align: center;
-    padding: 0.5em;
-}
-
-.game-over {
+.message {
     left: 0px;
     right: 0px;
     bottom: 0px;
+    padding: 16px;
     position: absolute;
-    padding: 0.25em;
     text-align: center;
+}
+
+.game-over.message {
     font-size: 2em;
 }

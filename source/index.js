@@ -44,11 +44,12 @@ class Game {
                 if(this.delta > SPAWN_TIME) {
                     this.delta -= SPAWN_TIME
                     var position = new Position({
-                        x: Math.floor(Math.random() * FRAME_WIDTH),
-                        y: Math.floor(Math.random() * FRAME_HEIGHT),
+                        x: Math.floor(Math.random() * FRAME_WIDTH - 2) + 1,
+                        y: Math.floor(Math.random() * FRAME_HEIGHT - 2) + 1,
                     })
                     this.pellets[position] = {
-                        position: position
+                        type: Math.random() < 0.5,
+                        position: position,
                     }
                 }
             }
@@ -109,7 +110,11 @@ class Snake {
             }
 
             if(!!this.game.pellets[this.position]) {
-                this.size += 1
+                if(this.game.pellets[this.position].type) {
+                    this.size += 1
+                } else {
+                    this.game.isPlaying = false
+                }
             }
 
             var collidesWithSelf = this.pods.some((pod) => {
@@ -137,6 +142,7 @@ class Snake {
             || !!this.direction.y
     }
     get speed() {
+        return 0.2
         return Math.max(MINIMUM_SPEED, (1 - ((Math.floor(this.size / ACCELERATION_GRADIENT) + 1) / SPEED_LEVEL_COUNT)) + MINIMUM_SPEED)
     }
 }
@@ -244,7 +250,7 @@ class PelletComponent extends React.Component {
             position: "absolute",
             top: this.props.pellet.position.y + "em",
             left: this.props.pellet.position.x + "em",
-            backgroundColor: "#0C0",
+            backgroundColor: this.props.pellet.type ? "#0C0" : "#000",
         }
     }
 }
@@ -254,12 +260,12 @@ class UserInterface extends React.Component {
         return (
             <div className="user-interface" style={this.style}>
                 {!this.props.game.snake.hasDirection() ? (
-                    <div className="user-prompt">
+                    <div className="start-game message">
                         <span>Press any Key :D</span>
                     </div>
                 ) : null}
                 {!this.props.game.isPlaying ? (
-                    <div className="game-over">
+                    <div className="game-over message">
                         <span>Game Over!</span>
                     </div>
                 ) : null}
@@ -313,8 +319,3 @@ var loop = new Afloop((delta) => {
     state.game.update(delta)
     render.setState(state)
 })
-
-// add collision with self
-// add collision with pellets
-// spawn two different kinds of pellet
-// add collision with bad pallets

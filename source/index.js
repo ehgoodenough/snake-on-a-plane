@@ -55,13 +55,15 @@ class Game {
                 }
             }
         } else {
-            if(Keyb.isJustDown("W") || Keyb.isJustDown("<up>")
-            || Keyb.isJustDown("S") || Keyb.isJustDown("<down>")
-            || Keyb.isJustDown("A") || Keyb.isJustDown("<left>")
-            || Keyb.isJustDown("D") || Keyb.isJustDown("<right>")) {
-                this.initiate()
-            }
             this.delta += delta
+            if(this.delta > GAME_OVER_TIME / 2) {
+                if(Keyb.isJustDown("W") || Keyb.isJustDown("<up>")
+                || Keyb.isJustDown("S") || Keyb.isJustDown("<down>")
+                || Keyb.isJustDown("A") || Keyb.isJustDown("<left>")
+                || Keyb.isJustDown("D") || Keyb.isJustDown("<right>")) {
+                    this.initiate()
+                }
+            }
             if(this.delta > GAME_OVER_TIME) {
                 this.initiate()
             }

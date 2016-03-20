@@ -146,6 +146,9 @@ class Snake {
         return 0.2
         return Math.max(MINIMUM_SPEED, (1 - ((Math.floor(this.size / ACCELERATION_GRADIENT) + 1) / SPEED_LEVEL_COUNT)) + MINIMUM_SPEED)
     }
+    get score() {
+        return this.size - INITIAL_SIZE
+    }
 }
 
 class Position {
@@ -269,13 +272,17 @@ class UserInterface extends React.Component {
                         <div className="start-game message">
                             <span>Press any arrow Key</span>
                         </div>
+
                     </div>
-                ) : null}
-                {!this.props.game.isPlaying ? (
+                ) : (this.props.game.isPlaying ? (
+                    <div className="score">
+                        <span>{this.props.game.snake.score}</span>
+                    </div>
+                ) : (
                     <div className="game-over message">
                         <span>Game Over!</span>
                     </div>
-                ) : null}
+                ))}
             </div>
         )
     }

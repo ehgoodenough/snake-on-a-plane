@@ -29,9 +29,19 @@ html {
     font-size: 2em;
 }
 
+.score {
+    font-size: 2em;
+    padding: 16px;
+}
+
 header {
     padding: 16px;
     text-align: center;
+
+    h1 {
+        color: #C00;
+        text-shadow: 2px 2px #000;
+    }
 
     h2 {
         font-size: 0.75em;
